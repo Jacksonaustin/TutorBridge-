@@ -1,0 +1,524 @@
+TutorBridge
+
+TutorBridge is a rough frontend prototype for the GoodDeeds software engineering project.
+
+The idea is to connect students who need academic help with students who are willing to volunteer as tutors.
+
+This version is intentionally small and simple so the team can understand and explain how the code works before connecting it to a backend, REST API, database, Docker containers, or other project requirements.
+
+Current Status
+
+This is currently a frontend-only prototype.
+
+It does not currently use:
+
+A backend server
+
+A REST API
+
+MongoDB or any other database
+
+User authentication
+
+Sessions
+
+Passwords
+
+Docker
+
+Cloud storage
+
+Everything is contained inside a single file:
+
+TutorBridge_OneFile.html
+
+The HTML, CSS, and JavaScript are all inside that one file.
+
+Current Features
+
+The prototype contains four main views:
+
+Home
+
+Introduces TutorBridge and explains the basic workflow.
+
+Users can choose to:
+
+Browse tutoring requests
+
+Request tutoring
+
+Enter their user information
+
+User Info
+
+Allows a user to enter:
+
+Name
+
+Email
+
+Role
+
+Possible roles are:
+
+Student requesting help
+
+Volunteer tutor
+
+Both
+
+This is not authentication.
+
+There are no passwords, login credentials, or secure sessions.
+
+The information is only used to identify the current user while testing the frontend.
+
+Request Tutoring
+
+Allows a student to create a tutoring request containing:
+
+Name
+
+Contact email
+
+Subject
+
+Topic
+
+Description
+
+Preferred time
+
+After submission, the request is added to the list of tutoring requests.
+
+Browse Requests
+
+Displays tutoring requests as cards.
+
+Each request shows:
+
+Subject
+
+Topic
+
+Description
+
+Student name
+
+Preferred time
+
+Contact information
+
+Request status
+
+A user can also volunteer to tutor an open request.
+
+When this happens, the request status changes from:
+
+OPEN
+
+to:
+
+MATCHED
+
+There is also a simple subject filter.
+
+How to Run the Prototype
+
+No installation is required.
+
+Clone or download the repository.
+
+Open the project folder.
+
+Open:
+
+TutorBridge_OneFile.html
+
+in a web browser.
+
+The project can also be previewed using the Live Preview extension in Visual Studio Code.
+
+Code Structure
+
+Although the prototype uses only one file, the code is divided into three normal web-development sections.
+
+TutorBridge_OneFile.html
+│
+├── HTML
+│   └── Defines the content and page layout
+│
+├── CSS
+│   └── Controls appearance and responsive design
+│
+└── JavaScript
+    └── Controls page switching, forms, requests, and demo data
+
+HTML
+
+HTML defines what appears on the page.
+
+The four main views are represented by separate <section> elements:
+
+<section id="home" class="view active">
+
+<section id="login" class="view">
+
+<section id="request" class="view">
+
+<section id="browse" class="view">
+
+Only one view is displayed at a time.
+
+This lets the prototype behave like a website with multiple pages while still remaining inside one HTML file.
+
+CSS
+
+CSS controls how the website looks.
+
+The CSS is contained inside:
+
+<style>
+
+near the top of the file.
+
+It controls things such as:
+
+Background
+
+Colors
+
+Navigation bar
+
+Buttons
+
+Forms
+
+Request cards
+
+Layout
+
+Mobile responsiveness
+
+Reusable CSS classes are used throughout the website.
+
+For example:
+
+.btn
+
+defines the basic button appearance.
+
+.btn.primary
+
+defines the main purple buttons.
+
+.panel
+
+creates the white card-style containers around forms.
+
+JavaScript
+
+JavaScript provides the interactive behavior.
+
+The JavaScript is located inside:
+
+<script>
+
+near the bottom of the file.
+
+Switching Between Views
+
+The function:
+
+showView(name)
+
+changes which section is currently visible.
+
+For example:
+
+showView("browse");
+
+shows the Browse Requests view.
+
+The function removes the active class from the other views and adds it to the selected one.
+
+This means the website does not actually load another HTML page.
+
+Instead, JavaScript hides and shows different sections of the same file.
+
+Sample Tutoring Requests
+
+The prototype begins with some sample data:
+
+const sampleRequests = [
+    ...
+];
+
+These requests exist only so the Browse page has something to display when the prototype first opens.
+
+They are JavaScript objects stored in an array.
+
+A request contains information such as:
+
+{
+    id: 1,
+    name: "Jordan",
+    subject: "Computer Science",
+    topic: "Java Recursion",
+    description: "...",
+    time: "Thursday, 3:00–5:00 PM",
+    contact: "jordan@example.edu",
+    status: "OPEN"
+}
+
+Data Storage
+
+There Is Currently No Database
+
+The prototype does not communicate with MongoDB, SQL, or any other database.
+
+For the prototype, data is temporarily stored using the browser's:
+
+localStorage
+
+localStorage allows a website to save small amounts of data inside the user's browser.
+
+For example:
+
+localStorage.setItem("tutorbridgeUser", JSON.stringify(currentUser));
+
+stores information about the current user.
+
+The tutoring request list is saved using:
+
+localStorage.setItem("tutorbridgeRequests", JSON.stringify(requests));
+
+Because localStorage can only store text, JavaScript objects are converted into JSON text using:
+
+JSON.stringify()
+
+When the data is loaded again, it is converted back into JavaScript objects using:
+
+JSON.parse()
+
+Important Limitation of localStorage
+
+localStorage is only being used for the frontend prototype.
+
+It is not a replacement for the project's final database.
+
+The information:
+
+Exists only in that browser
+
+Is not shared with other users
+
+Is not stored on a server
+
+Can be deleted by clearing browser data
+
+Has no real security
+
+Later, the frontend can be changed so that it sends requests to the backend REST API instead.
+
+Creating a Tutoring Request
+
+The tutoring form is identified by:
+
+document.getElementById("requestForm")
+
+JavaScript listens for the form's submit event.
+
+Instead of refreshing the webpage, the code uses:
+
+event.preventDefault();
+
+The values entered into the form are read using:
+
+const data = new FormData(event.target);
+
+A new JavaScript object is then created and added to the tutoring request array.
+
+Example:
+
+requests.unshift({
+    id: Date.now(),
+    name: data.get("name").trim(),
+    contact: data.get("contact").trim(),
+    subject: data.get("subject"),
+    topic: data.get("topic").trim(),
+    description: data.get("description").trim(),
+    time: data.get("time").trim(),
+    status: "OPEN"
+});
+
+Date.now() is used as a simple temporary unique ID for the prototype.
+
+A real backend/database would eventually create and manage IDs instead.
+
+Displaying Requests
+
+The function:
+
+renderRequests()
+
+takes the requests stored in JavaScript and creates the request cards shown on the Browse page.
+
+It also checks the selected subject filter.
+
+If the selected filter is:
+
+All
+
+every request is shown.
+
+Otherwise, only requests matching the selected subject are displayed.
+
+Volunteering for a Request
+
+When a user clicks:
+
+Volunteer to Tutor
+
+the function:
+
+volunteer(id)
+
+runs.
+
+The function finds the tutoring request with the matching ID.
+
+It then changes:
+
+request.status = "MATCHED";
+
+and stores the current user's name as the tutor.
+
+The request list is then rendered again so the new status appears on screen.
+
+User Information
+
+The User Info page stores simple information about the person using the prototype.
+
+Example:
+
+currentUser = {
+    name: data.get("name").trim(),
+    email: data.get("email").trim(),
+    role: data.get("role")
+};
+
+Again, this is not authentication.
+
+The purpose is only to make the prototype demonstrate a more complete user workflow without implementing passwords or security features yet.
+
+HTML Escaping
+
+The function:
+
+escapeHtml(value)
+
+replaces certain characters before displaying user-entered text.
+
+For example:
+
+<
+>
+&
+"
+'
+
+are converted into safe HTML representations.
+
+This prevents user-entered text from accidentally being interpreted as HTML when it is displayed in a request card.
+
+Planned Final Architecture
+
+The current prototype only represents the frontend portion.
+
+A possible final architecture could be:
+
+Browser / Frontend
+        |
+        | REST API requests
+        v
+Backend Application
+        |
+        | Database operations
+        v
+NoSQL Database
+
+The frontend would eventually stop saving tutoring requests directly to localStorage.
+
+Instead, JavaScript would send HTTP requests to the backend.
+
+For example:
+
+POST /api/requests
+
+could create a tutoring request.
+
+GET /api/requests
+
+could retrieve tutoring requests.
+
+POST /api/requests/{id}/volunteer
+
+could allow a tutor to volunteer for a request.
+
+The backend would then be responsible for storing and retrieving the information from the database.
+
+Why the Prototype Is Intentionally Simple
+
+The first goal is to demonstrate the main TutorBridge workflow:
+
+Student needs help
+        |
+        v
+Creates tutoring request
+        |
+        v
+Tutor browses requests
+        |
+        v
+Tutor volunteers
+        |
+        v
+Request becomes matched
+
+More advanced features can be added later if development time allows.
+
+Possible future features include:
+
+Real backend REST API
+
+NoSQL database
+
+Docker containers
+
+Automated tests
+
+Secure authentication
+
+User accounts
+
+Search
+
+More advanced filtering
+
+Scheduling
+
+Notifications
+
+Tutor profiles
+
+Request completion tracking
+
+Project Goal
+
+The main goal of TutorBridge is:
+
+Make it easier for students who need academic assistance to connect with students who are willing to volunteer their time as tutors.
+
+The prototype focuses on demonstrating this basic connection before adding more complex functionality.
