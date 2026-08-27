@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TutorBridge</title>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  :root {
+    --bg: #f6f7fb;
+    --surface: rgba(255,255,255,.88);
+    --surface-solid: #ffffff;
+    --text: #1f2430;
+    --muted: #6f7685;
+    --border: #e4e7ef;
+    --purple: #7467f0;
+    --purple-dark: #5548d9;
+    --purple-soft: #efedff;
+    --green: #43b889;
+    --shadow: 0 18px 45px rgba(35, 42, 70, 0.10);
+  }
+
+  body {
+    margin: 0;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background:
+      radial-gradient(circle at top left, #ece9ff 0, transparent 32%),
+      radial-gradient(circle at bottom right, #e7fff5 0, transparent 25%),
+      var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  button, input, select, textarea {
+    font: inherit;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  .shell {
+    width: min(1120px, calc(100% - 32px));
+    margin: 0 auto;
+  }
+
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    backdrop-filter: blur(16px);
+    background: rgba(246,247,251,.82);
+    border-bottom: 1px solid rgba(228,231,239,.8);
+  }
+
+  nav {
+    min-height: 74px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 850;
+    font-size: 1.18rem;
+  }
+
+  .brand-mark {
+    width: 34px;
+    height: 34px;
+    border-radius: 11px;
+    display: grid;
+    place-items: center;
+    color: white;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--purple), #9f8cff);
+    box-shadow: 0 8px 18px rgba(116,103,240,.28);
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .nav-links button {
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    padding: 9px 12px;
+    border-radius: 10px;
+    font-weight: 650;
+  }
+
+  .nav-links button:hover,
+  .nav-links button.active {
+    color: var(--purple-dark);
+    background: var(--purple-soft);
+  }
+
+  main {
+    padding: 46px 0 72px;
+  }
+
+  .view {
+    display: none;
+    animation: fade .22s ease;
+  }
+
+  .view.active {
+    display: block;
+  }
+
+  @keyframes fade {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero {
+    min-height: 68vh;
+    display: grid;
+    grid-template-columns: 1.12fr .88fr;
+    align-items: center;
+    gap: 48px;
+  }
+
+  .eyebrow {
+    color: var(--purple);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .13em;
+    font-size: .75rem;
+  }
+
+  h1 {
+    margin: 12px 0 18px;
+    font-size: clamp(2.8rem, 7vw, 5.9rem);
+    line-height: .96;
+    letter-spacing: -.055em;
+  }
+
+  h2 {
+    margin: 0 0 10px;
+    letter-spacing: -.02em;
+  }
+
+  .lead {
+    color: var(--muted);
+    line-height: 1.7;
+    font-size: 1.08rem;
+    max-width: 650px;
+  }
+
+  .hero-card,
+  .panel,
+  .request-card {
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,.75);
+    border-radius: 24px;
+    box-shadow: var(--shadow);
+  }
+
+  .hero-card {
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-card::after {
+    content: "";
+    position: absolute;
+    width: 170px;
+    height: 170px;
+    right: -65px;
+    top: -65px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(116,103,240,.17), rgba(67,184,137,.16));
+  }
+
+  .steps {
+    display: grid;
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  .step {
+    display: flex;
+    gap: 13px;
+    align-items: flex-start;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: rgba(255,255,255,.72);
+  }
+
+  .step-number {
+    flex: 0 0 30px;
+    height: 30px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    color: var(--purple-dark);
+    background: var(--purple-soft);
+    font-weight: 800;
+  }
+
+  .step small {
+    color: var(--muted);
+    display: block;
+    margin-top: 3px;
+    line-height: 1.45;
+  }
+
+  .actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 28px;
+  }
+
+  .btn {
+    border: 0;
+    border-radius: 12px;
+    padding: 12px 18px;
+    font-weight: 800;
+    transition: .15s ease;
+  }
+
+  .btn.primary {
+    background: linear-gradient(135deg, var(--purple), #897df4);
+    color: white;
+    box-shadow: 0 10px 22px rgba(116,103,240,.23);
+  }
+
+  .btn.primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 28px rgba(116,103,240,.28);
+  }
+
+  .btn.secondary {
+    color: var(--purple-dark);
+    background: var(--purple-soft);
+  }
+
+  .btn.success {
+    color: white;
+    background: var(--green);
+  }
+
+  .page-head {
+    margin-bottom: 24px;
+  }
+
+  .page-head h1 {
+    font-size: clamp(2.2rem, 5vw, 3.7rem);
+    margin-bottom: 10px;
+  }
+
+  .panel {
+    padding: 26px;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+
+  .field {
+    display: grid;
+    gap: 7px;
+  }
+
+  .field.full {
+    grid-column: 1 / -1;
+  }
+
+  label {
+    font-weight: 750;
+    font-size: .94rem;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: rgba(255,255,255,.9);
+    color: var(--text);
+    padding: 12px 13px;
+    outline: none;
+    transition: .15s;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: #b7aefa;
+    box-shadow: 0 0 0 4px rgba(116,103,240,.10);
+  }
+
+  textarea {
+    min-height: 125px;
+    resize: vertical;
+  }
+
+  .helper {
+    color: var(--muted);
+    font-size: .89rem;
+    line-height: 1.5;
+  }
+
+  .notice {
+    margin-top: 18px;
+    padding: 13px 14px;
+    border-radius: 12px;
+    background: #eafaf3;
+    border: 1px solid #bfead8;
+    color: #247958;
+    display: none;
+    font-weight: 700;
+  }
+
+  .user-strip {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    width: fit-content;
+    padding: 9px 12px;
+    border-radius: 999px;
+    color: var(--muted);
+    background: rgba(255,255,255,.72);
+    border: 1px solid var(--border);
+    margin-top: 20px;
+  }
+
+  .user-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+
+  .browse-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+  }
+
+  .filter {
+    min-width: 230px;
+  }
+
+  .request-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .request-card {
+    padding: 20px;
+  }
+
+  .request-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .subject {
+    color: var(--purple);
+    font-weight: 850;
+    font-size: .77rem;
+    text-transform: uppercase;
+    letter-spacing: .09em;
+  }
+
+  .request-card h3 {
+    margin: 6px 0 8px;
+    font-size: 1.24rem;
+  }
+
+  .request-card p {
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  .badge {
+    padding: 6px 9px;
+    border-radius: 999px;
+    font-size: .75rem;
+    font-weight: 850;
+    color: var(--purple-dark);
+    background: var(--purple-soft);
+  }
+
+  .badge.matched {
+    color: #247958;
+    background: #eafaf3;
+  }
+
+  .meta {
+    display: grid;
+    gap: 6px;
+    padding: 13px 0;
+    margin: 12px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    color: var(--muted);
+    font-size: .9rem;
+  }
+
+  .meta strong {
+    color: var(--text);
+  }
+
+  .empty {
+    grid-column: 1 / -1;
+    border: 1px dashed var(--border);
+    background: rgba(255,255,255,.58);
+    padding: 28px;
+    text-align: center;
+    border-radius: 18px;
+    color: var(--muted);
+  }
+
+  footer {
+    padding: 28px 0 36px;
+    color: var(--muted);
+    text-align: center;
+    font-size: .88rem;
+  }
+
+  @media (max-width: 760px) {
+    nav {
+      align-items: flex-start;
+      flex-direction: column;
+      padding: 14px 0;
+    }
+
+    .hero {
+      grid-template-columns: 1fr;
+      gap: 26px;
+    }
+
+    .form-grid,
+    .request-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .field.full {
+      grid-column: auto;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<header>
+  <nav class="shell">
+    <div class="brand">
+      <div class="brand-mark">T</div>
+      TutorBridge
+    </div>
+
+    <div class="nav-links">
+      <button data-view="home" class="active">Home</button>
+      <button data-view="browse">Browse</button>
+      <button data-view="request">Request Help</button>
+      <button data-view="login">User Info</button>
+    </div>
+  </nav>
+</header>
+
+<main class="shell">
+
+  <!-- HOME -->
+  <section id="home" class="view active">
+    <div class="hero">
+      <div>
+        <div class="eyebrow">Students helping students</div>
+        <h1>Find help.<br>Offer help.</h1>
+
+        <p class="lead">
+          TutorBridge connects students who need academic help with
+          students willing to volunteer their time and skills.
+        </p>
+
+        <div class="actions">
+          <button class="btn primary" data-view="browse">Browse Requests</button>
+          <button class="btn secondary" data-view="request">Request Tutoring</button>
+        </div>
+
+        <div class="user-strip">
+          <span class="user-dot"></span>
+          Current user: <strong id="homeUser">Guest</strong>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <div class="eyebrow">Simple by design</div>
+        <h2 style="margin-top:8px;">How TutorBridge works</h2>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div>
+              <strong>Ask for help</strong>
+              <small>A student creates a tutoring request.</small>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">2</div>
+            <div>
+              <strong>Browse requests</strong>
+              <small>Volunteer tutors look for subjects they know.</small>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">3</div>
+            <div>
+              <strong>Make a match</strong>
+              <small>A tutor volunteers and the request is marked matched.</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- USER INFO -->
+  <section id="login" class="view">
+    <div class="page-head">
+      <div class="eyebrow">Demo user profile</div>
+      <h1>User Info</h1>
+      <p class="lead">
+        This is intentionally simple. It identifies the current user,
+        but it is not secure authentication.
+      </p>
+    </div>
+
+    <div class="panel">
+      <form id="userForm">
+        <div class="form-grid">
+          <div class="field">
+            <label>Name</label>
+            <input name="name" required placeholder="Your name">
+          </div>
+
+          <div class="field">
+            <label>Email</label>
+            <input name="email" type="email" required placeholder="you@example.edu">
+          </div>
+
+          <div class="field full">
+            <label>Role</label>
+            <select name="role">
+              <option value="Student">Student requesting help</option>
+              <option value="Tutor">Volunteer tutor</option>
+              <option value="Both">Both</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn primary" type="submit">Continue</button>
+        </div>
+      </form>
+
+      <div class="notice" id="userNotice">User info saved.</div>
+    </div>
+  </section>
+
+
+  <!-- REQUEST -->
+  <section id="request" class="view">
+    <div class="page-head">
+      <div class="eyebrow">Ask for academic help</div>
+      <h1>Request Tutoring</h1>
+      <p class="lead">
+        Tell volunteer tutors what you need help with and when you're available.
+      </p>
+    </div>
+
+    <div class="panel">
+      <form id="requestForm">
+        <div class="form-grid">
+
+          <div class="field">
+            <label>Your name</label>
+            <input name="name" required>
+          </div>
+
+          <div class="field">
+            <label>Contact email</label>
+            <input name="contact" type="email" required>
+          </div>
+
+          <div class="field">
+            <label>Subject</label>
+            <select name="subject">
+              <option>Computer Science</option>
+              <option>Mathematics</option>
+              <option>Chemistry</option>
+              <option>Biology</option>
+              <option>English</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Topic</label>
+            <input name="topic" required placeholder="Java recursion">
+          </div>
+
+          <div class="field full">
+            <label>What do you need help with?</label>
+            <textarea name="description" required placeholder="Briefly describe what you're struggling with..."></textarea>
+          </div>
+
+          <div class="field full">
+            <label>Preferred time</label>
+            <input name="time" required placeholder="Thursday, 3:00–5:00 PM">
+          </div>
+
+        </div>
+
+        <div class="actions">
+          <button class="btn primary" type="submit">Submit Request</button>
+          <button class="btn secondary" type="button" data-view="browse">Browse Requests</button>
+        </div>
+      </form>
+
+      <div class="notice" id="requestNotice">Request added to the demo.</div>
+    </div>
+  </section>
+
+
+  <!-- BROWSE -->
+  <section id="browse" class="view">
+    <div class="browse-top">
+      <div class="page-head" style="margin:0;">
+        <div class="eyebrow">Volunteer your time</div>
+        <h1>Browse Requests</h1>
+        <p class="lead">Find a student you can help.</p>
+      </div>
+
+      <div class="field filter">
+        <label>Filter by subject</label>
+        <select id="subjectFilter">
+          <option>All</option>
+          <option>Computer Science</option>
+          <option>Mathematics</option>
+          <option>Chemistry</option>
+          <option>Biology</option>
+          <option>English</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="requestList" class="request-grid"></div>
+  </section>
+
+</main>
+
+<footer class="shell">
+  TutorBridge · GoodDeeds frontend concept
+</footer>
+
+<script>
+  const sampleRequests = [
+    {
+      id: 1,
+      name: "Jordan",
+      subject: "Computer Science",
+      topic: "Java Recursion",
+      description: "I understand loops, but recursive methods are confusing me.",
+      time: "Thursday, 3:00–5:00 PM",
+      contact: "jordan@example.edu",
+      status: "OPEN"
+    },
+    {
+      id: 2,
+      name: "Taylor",
+      subject: "Mathematics",
+      topic: "Calculus Integrals",
+      description: "Looking for help reviewing basic integration before the next quiz.",
+      time: "Friday afternoon",
+      contact: "taylor@example.edu",
+      status: "OPEN"
+    },
+    {
+      id: 3,
+      name: "Morgan",
+      subject: "Chemistry",
+      topic: "Balancing Equations",
+      description: "Need someone to walk me through a few practice problems.",
+      time: "Monday after 4:00 PM",
+      contact: "morgan@example.edu",
+      status: "OPEN"
+    }
+  ];
+
+  let currentUser = JSON.parse(localStorage.getItem("tutorbridgeUser") || "null");
+  let requests = JSON.parse(localStorage.getItem("tutorbridgeRequests") || "null") || sampleRequests;
+
+  function saveRequests() {
+    localStorage.setItem("tutorbridgeRequests", JSON.stringify(requests));
+  }
+
+  function showView(name) {
+    document.querySelectorAll(".view").forEach(view => {
+      view.classList.toggle("active", view.id === name);
+    });
+
+    document.querySelectorAll(".nav-links [data-view]").forEach(button => {
+      button.classList.toggle("active", button.dataset.view === name);
+    });
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    if (name === "browse") renderRequests();
+  }
+
+  document.querySelectorAll("[data-view]").forEach(button => {
+    button.addEventListener("click", () => showView(button.dataset.view));
+  });
+
+  function updateUserDisplay() {
+    document.getElementById("homeUser").textContent = currentUser?.name || "Guest";
+
+    const requestForm = document.getElementById("requestForm");
+    if (currentUser) {
+      requestForm.elements.name.value = currentUser.name || "";
+      requestForm.elements.contact.value = currentUser.email || "";
+    }
+  }
+
+  document.getElementById("userForm").addEventListener("submit", event => {
+    event.preventDefault();
+
+    const data = new FormData(event.target);
+
+    currentUser = {
+      name: data.get("name").trim(),
+      email: data.get("email").trim(),
+      role: data.get("role")
+    };
+
+    localStorage.setItem("tutorbridgeUser", JSON.stringify(currentUser));
+    updateUserDisplay();
+
+    const notice = document.getElementById("userNotice");
+    notice.style.display = "block";
+
+    setTimeout(() => showView("home"), 500);
+  });
+
+  document.getElementById("requestForm").addEventListener("submit", event => {
+    event.preventDefault();
+
+    const data = new FormData(event.target);
+
+    requests.unshift({
+      id: Date.now(),
+      name: data.get("name").trim(),
+      contact: data.get("contact").trim(),
+      subject: data.get("subject"),
+      topic: data.get("topic").trim(),
+      description: data.get("description").trim(),
+      time: data.get("time").trim(),
+      status: "OPEN"
+    });
+
+    saveRequests();
+
+    document.getElementById("requestNotice").style.display = "block";
+
+    setTimeout(() => {
+      showView("browse");
+    }, 500);
+  });
+
+  function renderRequests() {
+    const list = document.getElementById("requestList");
+    const filter = document.getElementById("subjectFilter").value;
+
+    const visible = filter === "All"
+      ? requests
+      : requests.filter(request => request.subject === filter);
+
+    list.innerHTML = "";
+
+    if (!visible.length) {
+      list.innerHTML = '<div class="empty">No tutoring requests match this subject.</div>';
+      return;
+    }
+
+    visible.forEach(request => {
+      const card = document.createElement("article");
+      card.className = "request-card";
+
+      card.innerHTML = `
+        <div class="request-top">
+          <div>
+            <div class="subject">${escapeHtml(request.subject)}</div>
+            <h3>${escapeHtml(request.topic)}</h3>
+          </div>
+          <div class="badge ${request.status === "MATCHED" ? "matched" : ""}">
+            ${escapeHtml(request.status)}
+          </div>
+        </div>
+
+        <p>${escapeHtml(request.description)}</p>
+
+        <div class="meta">
+          <span><strong>Student:</strong> ${escapeHtml(request.name)}</span>
+          <span><strong>Preferred time:</strong> ${escapeHtml(request.time)}</span>
+          <span><strong>Contact:</strong> ${escapeHtml(request.contact)}</span>
+        </div>
+
+        <button class="btn ${request.status === "OPEN" ? "success" : "secondary"}"
+                ${request.status !== "OPEN" ? "disabled" : ""}
+                onclick="volunteer(${request.id})">
+          ${request.status === "OPEN" ? "Volunteer to Tutor" : "Already Matched"}
+        </button>
+      `;
+
+      list.appendChild(card);
+    });
+  }
+
+  function volunteer(id) {
+    if (!currentUser) {
+      alert("Enter your user info first.");
+      showView("login");
+      return;
+    }
+
+    const request = requests.find(item => item.id === id);
+    if (!request || request.status !== "OPEN") return;
+
+    request.status = "MATCHED";
+    request.tutorName = currentUser.name;
+
+    saveRequests();
+    renderRequests();
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  document.getElementById("subjectFilter").addEventListener("change", renderRequests);
+
+  updateUserDisplay();
+  renderRequests();
+</script>
+
+</body>
+</html>
