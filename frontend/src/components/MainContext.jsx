@@ -1,11 +1,13 @@
 function MainContent({ view }) {
+  // The selected view is already available here for when each real feature is built.
+  // For now the content area intentionally stays empty instead of showing fake data.
   return (
-    <main className="flex-1 bg-TutorBridge-mid p-6 text-TutorBridge-text">
-      <p className="text-TutorBridge-muted">
-        Current view: <span className="font-semibold text-TutorBridge-text">{view}</span>
-      </p>
-    </main>
-  );
+    <main
+      className="min-w-0 flex-1 bg-TutorBridge-mid"
+      data-view={view}
+      aria-label={`${view} content`}
+    />
+  )
 }
 
-export default MainContent;
+export default MainContent
