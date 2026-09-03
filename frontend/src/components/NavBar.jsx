@@ -9,7 +9,7 @@ function NavBar({ activeView, onNavClick }) {
   ]
 
   return (
-    <aside className="flex min-h-screen w-60 shrink-0 flex-col border-r border-TutorBridge-darkest bg-TutorBridge-dark px-3 py-4 text-TutorBridge-text">
+    <aside className="flex h-dvh w-60 shrink-0 flex-col border-r border-TutorBridge-darkest bg-TutorBridge-dark px-3 py-4 text-TutorBridge-text">
       <div className="mb-5 px-3">
         <div className="text-xl font-bold text-TutorBridge-text">TutorBridge</div>
         <div className="text-sm text-TutorBridge-muted">Students helping students</div>

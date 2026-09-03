@@ -9,9 +9,9 @@ function App() {
   const [activeView, setActiveView] = useState('home')
 
   return (
-    <div className="flex min-h-screen bg-TutorBridge-mid">
+    <div className="flex h-dvh overflow-hidden bg-TutorBridge-mid">
       <Navbar activeView={activeView} onNavClick={setActiveView} />
-      <MainContent view={activeView} />
+      <MainContent view={activeView} onNavClick={setActiveView} />
     </div>
   )
 }

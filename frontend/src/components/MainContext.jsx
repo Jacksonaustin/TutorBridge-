@@ -1,16 +1,15 @@
+import Home from './Home'
 import { LoginCard } from './Login'
 
-function MainContent({ view }) {
+function MainContent({ view, onNavClick }) {
   return (
     <main
-      className="min-w-0 flex-1 bg-TutorBridge-mid p-6 text-TutorBridge-text"
+      className="h-dvh min-w-0 flex-1 overflow-y-auto bg-TutorBridge-mid text-TutorBridge-text"
       data-view={view}
       aria-label={`${view} content`}
     >
+      {view === 'home' && <Home onNavClick={onNavClick} />}
       {view === 'login' && <LoginCard />}
-      {view !== 'login' && (
-        <p className="text-TutorBridge-muted">Current view: {view}</p>
-      )}
     </main>
   )
 }
