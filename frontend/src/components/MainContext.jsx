@@ -1,7 +1,7 @@
 import Home from './Home'
 import { LoginCard } from './Login'
 
-function MainContent({ view, onNavClick }) {
+function MainContent({ view, onNavClick, onAuthenticated }) {
   return (
     <main
       className="h-dvh min-w-0 flex-1 overflow-y-auto bg-TutorBridge-mid text-TutorBridge-text"
@@ -9,7 +9,7 @@ function MainContent({ view, onNavClick }) {
       aria-label={`${view} content`}
     >
       {view === 'home' && <Home onNavClick={onNavClick} />}
-      {view === 'login' && <LoginCard />}
+      {view === 'login' && <LoginCard onAuthenticated={onAuthenticated} />}
     </main>
   )
 }

@@ -1,6 +1,6 @@
 import { HomeIcon, SearchIcon, PlusIcon, MailIcon } from './Icons'
 
-function NavBar({ activeView, onNavClick }) {
+function NavBar({ activeView, onNavClick, user, authLoading, onLogout }) {
   const links = [
     { key: 'home', label: 'Home', icon: HomeIcon },
     { key: 'browse', label: 'Browse', icon: SearchIcon },
@@ -39,13 +39,30 @@ function NavBar({ activeView, onNavClick }) {
       </nav>
 
       <div className="mt-auto border-t border-TutorBridge-input pt-3">
-        <button
-          type="button"
-          onClick={() => onNavClick('login')}
-          className="w-full rounded-md bg-TutorBridge-accent px-3 py-2.5 font-medium text-TutorBridge-text transition-colors hover:bg-TutorBridge-accent-hover"
-        >
-          Sign in
-        </button>
+        {user ? (
+          <div className="rounded-md bg-TutorBridge-darkest p-3">
+            <div className="truncate font-semibold text-TutorBridge-text">{user.name}</div>
+            <div className="truncate text-xs text-TutorBridge-muted">
+              {user.major || user.email}
+            </div>
+            <button
+              type="button"
+              onClick={onLogout}
+              className="mt-3 w-full rounded-md bg-TutorBridge-input px-3 py-2 text-sm font-medium text-TutorBridge-text transition-colors hover:bg-TutorBridge-danger"
+            >
+              Log out
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => onNavClick('login')}
+            disabled={authLoading}
+            className="w-full rounded-md bg-TutorBridge-accent px-3 py-2.5 font-medium text-TutorBridge-text transition-colors hover:bg-TutorBridge-accent-hover disabled:cursor-wait disabled:opacity-60"
+          >
+            {authLoading ? 'Checking session...' : 'Sign in'}
+          </button>
+        )}
       </div>
     </aside>
   )
