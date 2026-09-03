@@ -1,11 +1,5 @@
 @import "tailwindcss";
 
-body {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}   
-
 
 /* TutorBridge color theme */
 @theme {
@@ -20,3 +14,9 @@ body {
   --color-TutorBridge-online: #23a559;
   --color-TutorBridge-danger: #f23f42;
 }
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}   
