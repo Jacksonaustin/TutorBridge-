@@ -1,12 +1,17 @@
+import { LoginCard } from './Login'
+
 function MainContent({ view }) {
-  // The selected view is already available here for when each real feature is built.
-  // For now the content area intentionally stays empty instead of showing fake data.
   return (
     <main
-      className="min-w-0 flex-1 bg-TutorBridge-mid"
+      className="min-w-0 flex-1 bg-TutorBridge-mid p-6 text-TutorBridge-text"
       data-view={view}
       aria-label={`${view} content`}
-    />
+    >
+      {view === 'login' && <LoginCard />}
+      {view !== 'login' && (
+        <p className="text-TutorBridge-muted">Current view: {view}</p>
+      )}
+    </main>
   )
 }
 
