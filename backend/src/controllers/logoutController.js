@@ -1,3 +1,5 @@
+// POST /api/auth/logout
+// Destroys the authenticated session and clears its browser cookie.
 export function logout(req, res, next) {
   req.session.destroy((error) => {
     if (error) {

@@ -1,5 +1,8 @@
+// Basic email-shape check used by both signup and login validation.
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Validates the fields accepted by POST /api/auth/signup.
+// Returns an array of user-friendly errors; an empty array means the data is valid.
 export function validateSignup({ name, email, password, major } = {}) {
   const errors = [];
 
@@ -34,6 +37,8 @@ export function validateSignup({ name, email, password, major } = {}) {
   return errors;
 }
 
+// Validates the credentials accepted by POST /api/auth/login.
+// This only checks input format; the controller verifies the actual credentials.
 export function validateLogin({ email, password } = {}) {
   const errors = [];
 

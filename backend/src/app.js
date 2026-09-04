@@ -4,6 +4,7 @@ import cors from "cors";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import authRoutes from "./routes/authRoutes.js";
+import requestRoutes from "./routes/requestRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 
 const app = express();
@@ -52,6 +53,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/requests", requestRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Endpoint not found." });

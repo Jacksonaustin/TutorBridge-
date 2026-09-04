@@ -7,6 +7,8 @@ import {
   saveSession,
 } from "./authController.js";
 
+// POST /api/auth/login
+// Verifies an email and password, then makes an authenticated session.
 export async function login(req, res, next) {
   try {
     const errors = validateLogin(req.body);

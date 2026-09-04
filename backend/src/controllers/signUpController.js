@@ -7,6 +7,8 @@ import {
   saveSession,
 } from "./authController.js";
 
+// POST /api/auth/signup
+// Creates a user, hashes their password, and signs them in with a new session.
 export async function signup(req, res, next) {
   try {
     const errors = validateSignup(req.body);

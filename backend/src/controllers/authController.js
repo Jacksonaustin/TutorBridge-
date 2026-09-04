@@ -1,3 +1,5 @@
+// Converts a User document into the safe user data returned by auth endpoints.
+// The password hash is intentionally never included.
 export function publicUser(user) {
   return {
     id: user._id,
@@ -8,6 +10,7 @@ export function publicUser(user) {
   };
 }
 
+// Replaces the current session after signup or login.
 export function regenerateSession(req) {
   return new Promise((resolve, reject) => {
     req.session.regenerate((error) => {
@@ -17,6 +20,7 @@ export function regenerateSession(req) {
   });
 }
 
+// Makes sure the authenticated session is stored before an API response is sent.
 export function saveSession(req) {
   return new Promise((resolve, reject) => {
     req.session.save((error) => {

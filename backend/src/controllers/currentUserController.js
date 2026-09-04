@@ -1,6 +1,8 @@
 import User from "../models/User.js";
 import { publicUser } from "./authController.js";
 
+// GET /api/auth/me
+// Returns the user on the current authenticated session.
 export async function getCurrentUser(req, res, next) {
   try {
     const user = await User.findById(req.session.userId);
