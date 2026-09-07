@@ -1,7 +1,15 @@
 import mongoose from "mongoose";
 
-const conversationSchema = new mongoose.Schema(
+const messageSchema = new mongoose.Schema(
   {
+
+    //nessicary to link the message to a specific conversation, allowing you to retrieve all messages for a given conversation easily.
+    conversationId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Conversation",
+        required: true,
+        index: true,
+    },
     senderId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -23,11 +31,6 @@ const conversationSchema = new mongoose.Schema(
     readAt  : { 
         type: Date,
         default: null,
-        index: true,
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now,
         index: true,
     },
   },
