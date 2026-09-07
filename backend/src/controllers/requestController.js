@@ -66,13 +66,19 @@ export async function createRequest(req, res, next) {
 // Returns requests filtered by status (pending by default) and optional subject.
 export async function listRequests(req, res, next) {
   try {
-    const status = req.query.status || "pending";
+    const status = req.query.status;
 
-    if (!REQUEST_STATUSES.includes(status)) {
-      return res.status(400).json({ message: "Invalid request status." });
+    const filter = {
+      status: { $in: ["pending", "accepted"] },
+    };
+
+    if (status) {
+      if (!REQUEST_STATUSES.includes(status)) {
+        return res.status(400).json({ message: "Invalid request status." });
+      }
+
+      filter.status = status;
     }
-
-    const filter = { status };
 
     if (typeof req.query.subject === "string" && req.query.subject.trim()) {
       filter.subject = req.query.subject.trim();

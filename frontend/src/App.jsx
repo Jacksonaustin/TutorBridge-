@@ -66,6 +66,7 @@ function App() {
         view={activeView}
         onNavClick={setActiveView}
         onAuthenticated={handleAuthenticated}
+        user={user}
       />
     </div>
   )
