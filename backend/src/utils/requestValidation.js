@@ -1,4 +1,4 @@
-// Accepts either 24-hour time (15:30) or 12-hour time (3:30 PM).
+// Accepts either 24-hour time, or 12-hour time.
 const TIME_PATTERN =
   /^(([01]\d|2[0-3]):[0-5]\d|(0?[1-9]|1[0-2]):[0-5]\d\s?(AM|PM))$/i;
 
