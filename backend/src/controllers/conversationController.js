@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import Conversation from "../models/Conversation.js";
 import User from "../models/User.js";
 
-const User_Fields = "name major";
+const USER_FIELDS = "name major";
 
 function isValidId(id) {
     return mongoose.isValidObjectId(id);
@@ -30,7 +30,8 @@ function prepareConversation(conversation, currentUserId) {
 
     return {
         _id: conversation._id,
-        participantIds: otherParticipant && otherParticipant._id ? otherParticipant._id : null,
+        otherParticipant: 
+            otherParticipant && otherParticipant._id ? otherParticipant : null,
         lastMessage: conversation.lastMessage,
         lastMessageTimestamp: conversation.lastMessageTimestamp,
         createdAt: conversation.createdAt,
@@ -53,7 +54,7 @@ export async function listConversations(req, res, next) {
         .sort({ lastMessageTimestamp: -1, updatedAt: -1 })
 
         // Populates the participantIds field with user information, but only includes the name and major fields for each participant.
-        .populate("participantIds", User_Fields);
+        .populate("participantIds", USER_FIELDS);
 
 
         // Prepares the conversations for sending to the client, including only the necessary fields and formatting the data as needed.
@@ -102,7 +103,7 @@ export async function createConversation(req, res, next) {
         }
 
         // Populates the participantIds field with user information, but only includes the name and major fields for each participant.
-        await conversation.populate("participantIds", User_Fields);
+        await conversation.populate("participantIds", USER_FIELDS);
         
         // Prepares the conversation for sending to the client, including only the necessary fields and formatting the data as needed.
         return res
@@ -120,16 +121,16 @@ export async function getConversation(req, res, next) {
 
     try {
         
-        if(!isValidId(req.params.id)) {
+        if(!isValidId(req.params.conversationId)) {
             return res.status(400).json({ message: "Invalid conversationId." });
         }
 
         // Finds the conversation by ID and ensures that the current user is a participant in the conversation.
         const conversation = await Conversation.findOne({
-            _id: req.params.id,
+            _id: req.params.conversationId,
             participantIds: req.session.userId
         })
-        .populate("participantIds", User_Fields);
+        .populate("participantIds", USER_FIELDS);
 
         if(!conversation) {
             return res.status(404).json({ message: "Conversation not found." });

@@ -7,7 +7,7 @@ import {
 import {
     listMessages,
     sendMessage,
-    markConversationAsRead,
+    markConversationRead,
 } from "../controllers/messageController.js";
 import requireAuth from "../middleware/requireAuth.js";
 
@@ -20,6 +20,6 @@ router.post("/", createConversation);
 router.get("/:conversationId", getConversation);
 router.get("/:conversationId/messages", listMessages);
 router.post("/:conversationId/messages", sendMessage);
-router.post("/:conversationId/read", markConversationAsRead);
+router.post("/:conversationId/read", markConversationRead);
 
 export default router;  

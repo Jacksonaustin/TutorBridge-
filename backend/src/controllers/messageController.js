@@ -24,9 +24,9 @@ export async function listMessages(req, res, next) {
     try {
 
 
-        const converstaion = await findMembership(req.params.conversationId, req.session.userId);
+        const conversation = await findMembership(req.params.conversationId, req.session.userId);
 
-        if(!converstaion) {
+        if(!conversation) {
             return res.status(404).json({ message: "Conversation not found." });
         }
         
@@ -37,7 +37,7 @@ export async function listMessages(req, res, next) {
             Number.isNaN(requested) || requested < 1 ? DEFAULT_LIMIT : requested, MAX_LIMIT
         );
 
-        const filter = { conversationId: converstaion._id };
+        const filter = { conversationId: conversation._id };
 
         // If a 'before' date is provided in the query parameters, it filters messages to only include those created before that date.
         if(req.query.before !== undefined) {
@@ -95,8 +95,8 @@ export async function sendMessage(req, res, next) {
 
         await message.save();
 
-        const lastMessage = text;
-        const lastMessageTimestamp = message.createdAt;
+        conversation.lastMessage = text;
+        conversation.lastMessageTimestamp = message.createdAt;
         await conversation.save();
 
         // Populates the sender and receiver fields of the message with user information, but only includes the name and major fields for each user.
@@ -112,7 +112,7 @@ export async function sendMessage(req, res, next) {
 
     // POST /api/conversations/:id/read 
     //marks all messages in a specific conversation as read for the current user, ensuring that the user is a participant in that conversation.
-    async function markConversationRead(req, res, next) {
+    export async function markConversationRead(req, res, next) {
         try {
             const userId = req.session.userId;
             const conversation = await findMembership(req.params.conversationId, userId);
