@@ -1,5 +1,24 @@
 @import "tailwindcss";
 
+/* Reset some default styles for the html, body, and #root elements to ensure consistent layout and appearance across different browsers. */
+html,
+body,
+#root {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+  background: #1e1f22;
+}
+
+html,
+body {
+  overscroll-behavior: none;
+}
+
+#root {
+  min-height: 100dvh;
+}
+
 
 /* TutorBridge color theme */
 @theme {
