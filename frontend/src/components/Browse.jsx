@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-const API_URL = 'http://localhost:5000'
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
 const subjects = [
   'All Subjects',
@@ -34,10 +34,18 @@ function Browse({ user }) {
   useEffect(() => {
     fetch(`${API_URL}/api/requests`, {
       credentials: 'include',
-    })
-      .then((response) => response.json())
+    }) 
+      .then((response) => {
+        if (!response.ok) throw new Error('Not Authorized.')
+          return response.json()
+      })
+
       .then((data) => {
-        setRequests(data.requests)
+        setRequests(Array.isArray(data.requests) ? data.requests : [])
+      })
+      .catch((error) => {
+        setRequests([])
+        setError( 'Could not load requests — are you signed in?.')
       })
   }, [])
 
