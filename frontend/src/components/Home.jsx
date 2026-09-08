@@ -11,9 +11,9 @@ function Home({ onNavClick }) {
         Find help. Offer help.
       </h1>
 
-      <p className="mt-3 max-w-3xl text-lg leading-8 text-TutorBridge-muted">
+      <h2 className="mt-3 max-w-3xl text-lg leading-8 text-TutorBridge-muted">
         TutorBridge connects students who need academic support with students who are willing to tutor.
-      </p>
+      </h2>
 
       <div className="mt-8 grid gap-4 md:grid-cols-2">
         <button

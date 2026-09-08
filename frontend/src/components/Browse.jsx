@@ -24,30 +24,55 @@ const statuses = [
   'Accepted',
 ]
 
-function Browse({ user }) {
+function Browse({ user, onOpenConversation }) {
   const [requests, setRequests] = useState([])
   const [error, setError] = useState('')
   const [acceptingId, setAcceptingId] = useState(null)
-  const [selectedSubject, setSelectedSubject] = useState('All Subjects')
-  const [selectedStatus, setSelectedStatus] = useState('All Statuses')
+  const [messagingId, setMessagingId] = useState(null)
+
+  const [selectedSubject, setSelectedSubject] =
+    useState('All Subjects')
+
+  const [selectedStatus, setSelectedStatus] =
+    useState('All Statuses')
 
   useEffect(() => {
     fetch(`${API_URL}/api/requests`, {
       credentials: 'include',
-    }) 
+    })
       .then((response) => {
-        if (!response.ok) throw new Error('Not Authorized.')
-          return response.json()
-      })
+        if (!response.ok) {
+          throw new Error('Not Authorized.')
+        }
 
-      .then((data) => {
-        setRequests(Array.isArray(data.requests) ? data.requests : [])
+        return response.json()
       })
-      .catch((error) => {
+      .then((data) => {
+        setRequests(
+          Array.isArray(data.requests)
+            ? data.requests
+            : []
+        )
+      })
+      .catch(() => {
         setRequests([])
-        setError( 'Could not load requests — are you signed in?.')
+        setError(
+          'Could not load requests — are you signed in?'
+        )
       })
   }, [])
+
+  function getId(value) {
+    if (!value) {
+      return null
+    }
+
+    if (typeof value === 'object') {
+      return value._id || value.id
+    }
+
+    return value
+  }
 
   async function handleAccept(requestId) {
     setError('')
@@ -65,14 +90,17 @@ function Browse({ user }) {
       const data = await response.json()
 
       if (!response.ok) {
-        setError(data.message || 'Unable to accept request.')
+        setError(
+          data.message ||
+          'Unable to accept request.'
+        )
         return
       }
 
       setRequests((currentRequests) =>
         currentRequests.map((request) =>
           request._id === requestId
-            ? { ...request, status: 'accepted' }
+            ? data.request
             : request
         )
       )
@@ -80,6 +108,71 @@ function Browse({ user }) {
       setError('Unable to reach the server.')
     } finally {
       setAcceptingId(null)
+    }
+  }
+
+  async function handleMessage(request) {
+    setError('')
+    setMessagingId(request._id)
+
+    const currentUserId = getId(user)
+    const studentId = getId(request.studentId)
+    const tutorId = getId(request.tutorId)
+
+    let otherUserId = null
+
+    if (
+      currentUserId &&
+      studentId &&
+      String(currentUserId) === String(studentId)
+    ) {
+      otherUserId = tutorId
+    } else if (
+      currentUserId &&
+      tutorId &&
+      String(currentUserId) === String(tutorId)
+    ) {
+      otherUserId = studentId
+    }
+
+    if (!otherUserId) {
+      setError(
+        'Unable to determine the other user for this request.'
+      )
+      setMessagingId(null)
+      return
+    }
+
+    try {
+      const response = await fetch(
+        `${API_URL}/api/conversations`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            participantId: otherUserId,
+          }),
+        }
+      )
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        setError(
+          data.message ||
+          'Unable to open conversation.'
+        )
+        return
+      }
+
+      onOpenConversation(data.conversation._id)
+    } catch {
+      setError('Unable to reach the server.')
+    } finally {
+      setMessagingId(null)
     }
   }
 
@@ -113,11 +206,16 @@ function Browse({ user }) {
           <select
             id="subjectFilter"
             value={selectedSubject}
-            onChange={(event) => setSelectedSubject(event.target.value)}
+            onChange={(event) =>
+              setSelectedSubject(event.target.value)
+            }
             className="rounded-md bg-TutorBridge-input px-3 py-2 text-TutorBridge-text focus:outline-none"
           >
             {subjects.map((subject) => (
-              <option key={subject} value={subject}>
+              <option
+                key={subject}
+                value={subject}
+              >
                 {subject}
               </option>
             ))}
@@ -135,11 +233,16 @@ function Browse({ user }) {
           <select
             id="statusFilter"
             value={selectedStatus}
-            onChange={(event) => setSelectedStatus(event.target.value)}
+            onChange={(event) =>
+              setSelectedStatus(event.target.value)
+            }
             className="rounded-md bg-TutorBridge-input px-3 py-2 text-TutorBridge-text focus:outline-none"
           >
             {statuses.map((status) => (
-              <option key={status} value={status}>
+              <option
+                key={status}
+                value={status}
+              >
                 {status}
               </option>
             ))}
@@ -159,19 +262,30 @@ function Browse({ user }) {
 
       <div className="mt-6 space-y-4">
         {filteredRequests.map((request) => {
-          const studentId =
-            typeof request.studentId === 'object'
-              ? request.studentId?._id
-              : request.studentId
-
-          const currentUserId = user?._id || user?.id
+          const studentId = getId(request.studentId)
+          const tutorId = getId(request.tutorId)
+          const currentUserId = getId(user)
 
           const isOwnRequest =
             studentId &&
             currentUserId &&
-            String(studentId) === String(currentUserId)
+            String(studentId) ===
+              String(currentUserId)
 
-          const isAccepted = request.status === 'accepted'
+          const isTutor =
+            tutorId &&
+            currentUserId &&
+            String(tutorId) ===
+              String(currentUserId)
+
+          const isAccepted =
+            request.status === 'accepted'
+
+          const isOpeningMessage =
+            messagingId === request._id
+
+          const isAccepting =
+            acceptingId === request._id
 
           return (
             <div
@@ -201,11 +315,13 @@ function Browse({ user }) {
               <div className="mt-4 text-sm text-TutorBridge-muted">
                 <p>
                   Requested by:{' '}
-                  {request.studentId?.name || 'Unknown student'}
+                  {request.studentId?.name ||
+                    'Unknown student'}
                 </p>
 
                 <p>
-                  Date: {request.requestedDate?.slice(0, 10)}
+                  Date:{' '}
+                  {request.requestedDate?.slice(0, 10)}
                 </p>
 
                 <p>
@@ -215,21 +331,32 @@ function Browse({ user }) {
 
               <button
                 type="button"
-                onClick={() => handleAccept(request._id)}
+                onClick={() => {
+                  if (isAccepted && isTutor) {
+                    handleMessage(request)
+                  } else if (!isAccepted && !isOwnRequest) {
+                    handleAccept(request._id)
+                  }
+                }}
                 disabled={
                   isOwnRequest ||
-                  isAccepted ||
-                  acceptingId === request._id
+                  (isAccepted && !isTutor) ||
+                  isOpeningMessage ||
+                  isAccepting
                 }
                 className="mt-5 rounded-md bg-TutorBridge-accent px-4 py-2 font-medium text-TutorBridge-text hover:bg-TutorBridge-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {isAccepted
-                  ? 'Accepted'
-                  : isOwnRequest
-                    ? 'Your Request'
-                    : acceptingId === request._id
-                      ? 'Accepting...'
-                      : 'Volunteer'}
+                {isOwnRequest
+                  ? 'Your Request'
+                  : isAccepted && isTutor
+                    ? isOpeningMessage
+                      ? 'Opening...'
+                      : 'Message'
+                    : isAccepted
+                      ? 'Accepted'
+                      : isAccepting
+                        ? 'Accepting...'
+                        : 'Volunteer'}
               </button>
             </div>
           )
