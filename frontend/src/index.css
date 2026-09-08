@@ -1,26 +1,6 @@
 @import "tailwindcss";
 
-/* Reset some default styles for the html, body, and #root elements to ensure consistent layout and appearance across different browsers. */
-html,
-body,
-#root {
-  margin: 0;
-  width: 100%;
-  min-height: 100%;
-  background: #1e1f22;
-}
-
-html,
-body {
-  overscroll-behavior: none;
-}
-
-#root {
-  min-height: 100dvh;
-}
-
-
-/* TutorBridge color theme */
+/* TutorBridge dark theme is the default. */
 @theme {
   --color-TutorBridge-darkest: #1e1f22;
   --color-TutorBridge-dark: #2b2d31;
@@ -30,12 +10,56 @@ body {
   --color-TutorBridge-muted: #949ba4;
   --color-TutorBridge-accent: #5865f2;
   --color-TutorBridge-accent-hover: #4752c4;
+  --color-TutorBridge-on-accent: #ffffff;
   --color-TutorBridge-online: #23a559;
   --color-TutorBridge-danger: #f23f42;
 }
 
-body {
-  margin: 0;
-  padding: 0;
+/* Light mode overrides the same TutorBridge color variables.
+   Existing components can keep using classes like bg-TutorBridge-dark. */
+html[data-theme="light"] {
+  --color-TutorBridge-darkest: #e2e8f0;
+  --color-TutorBridge-dark: #f8fafc;
+  --color-TutorBridge-mid: #f1f5f9;
+  --color-TutorBridge-input: #e2e8f0;
+  --color-TutorBridge-text: #1f2937;
+  --color-TutorBridge-muted: #64748b;
+  --color-TutorBridge-accent: #5865f2;
+  --color-TutorBridge-accent-hover: #4752c4;
+  --color-TutorBridge-on-accent: #ffffff;
+  --color-TutorBridge-online: #168447;
+  --color-TutorBridge-danger: #dc2626;
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+* {
   box-sizing: border-box;
-}   
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+  background-color: var(--color-TutorBridge-mid);
+}
+
+html,
+body {
+  padding: 0;
+  overscroll-behavior: none;
+}
+
+#root {
+  min-height: 100dvh;
+}
+
+/* Keep white text readable on purple accent buttons in light mode. */
+html[data-theme="light"] .bg-TutorBridge-accent.text-TutorBridge-text {
+  color: #ffffff;
+}

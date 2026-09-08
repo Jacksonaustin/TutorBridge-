@@ -6,13 +6,24 @@ import Navbar from './components/NavBar'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
+function getSavedTheme() {
+  const savedTheme = localStorage.getItem('TutorBridge-theme')
+  return savedTheme === 'light' ? 'light' : 'dark'
+}
+
 function App() {
   const [activeView, setActiveView] = useState('home')
   const [user, setUser] = useState(null)
   const [authLoading, setAuthLoading] = useState(true)
+  const [theme, setTheme] = useState(getSavedTheme)
 
   const [selectedConversationId, setSelectedConversationId] =
     useState(null)
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    localStorage.setItem('TutorBridge-theme', theme)
+  }, [theme])
 
   useEffect(() => {
     async function checkSession() {
@@ -36,6 +47,12 @@ function App() {
 
     checkSession()
   }, [])
+
+  function handleToggleTheme() {
+    setTheme((currentTheme) =>
+      currentTheme === 'dark' ? 'light' : 'dark'
+    )
+  }
 
   function handleAuthenticated(authenticatedUser) {
     setUser(authenticatedUser)
@@ -68,6 +85,8 @@ function App() {
         user={user}
         authLoading={authLoading}
         onLogout={handleLogout}
+        theme={theme}
+        onToggleTheme={handleToggleTheme}
       />
 
       <MainContent
