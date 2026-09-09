@@ -1,0 +1,19 @@
+FROM node:24-alpine AS frontend-build
+WORKDIR /frontend
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci
+COPY frontend/ ./
+ENV VITE_API_URL=""
+RUN npm run build
+
+FROM node:24-alpine
+WORKDIR /app
+COPY backend/package.json backend/package-lock.json ./
+RUN npm ci --omit=dev
+COPY backend/index.js ./
+COPY backend/src ./src
+COPY --from=frontend-build /frontend/dist ./public
+ENV NODE_ENV=production SERVE_FRONTEND=true PORT=10000
+USER node
+EXPOSE 10000
+CMD ["node", "index.js"]

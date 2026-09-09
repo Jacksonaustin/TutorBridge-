@@ -1,5 +1,12 @@
 # TutorBridge 
 
+## Running and deploying
+
+Local containers: `docker compose up --build` (requires `backend/.env`).
+Render deployment: use the root `render.yaml` Blueprint and follow
+[DEPLOYMENT.md](DEPLOYMENT.md). Render uses one free web service for both the
+frontend and API. Local Compose uses two containers for development and testing.
+
 Students often need academic help but may not have access to affordable or convenient tutoring. At the same time, other students are willing to volunteer their knowledge and help others but lack an easy way to find students who need assistance.
 
 TutorBridge provides a centralized website where students can find, connect with, and volunteer to tutor other students. The platform makes it easier for students to access academic support while creating opportunities for knowledgeable students to give back to their community.

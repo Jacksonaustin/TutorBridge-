@@ -3,7 +3,11 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Validates the fields accepted by POST /api/auth/signup.
 // Returns an array of user-friendly errors; an empty array means the data is valid.
-export function validateSignup({ name, email, password, major } = {}) {
+export function validateSignup(body) {
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return ["Request body must be a JSON object."];
+  }
+  const { name, email, password, major } = body;
   const errors = [];
 
   if (typeof name !== "string" || name.trim().length < 2) {
@@ -22,7 +26,7 @@ export function validateSignup({ name, email, password, major } = {}) {
     errors.push("Password must contain at least 8 characters.");
   }
 
-  if (Buffer.byteLength(password || "", "utf8") > 72) {
+  if (typeof password === "string" && Buffer.byteLength(password, "utf8") > 72) {
     errors.push("Password is too long.");
   }
 
@@ -39,7 +43,11 @@ export function validateSignup({ name, email, password, major } = {}) {
 
 // Validates the credentials accepted by POST /api/auth/login.
 // This only checks input format; the controller verifies the actual credentials.
-export function validateLogin({ email, password } = {}) {
+export function validateLogin(body) {
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return ["Request body must be a JSON object."];
+  }
+  const { email, password } = body;
   const errors = [];
 
   if (typeof email !== "string" || !EMAIL_PATTERN.test(email.trim())) {

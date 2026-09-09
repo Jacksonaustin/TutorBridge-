@@ -77,7 +77,7 @@ export async function sendMessage(req, res, next) {
         }
 
         // Validates the message text to ensure it is a non-empty string and does not exceed the maximum allowed length.
-        const text = typeof req.body.text === "string" ? req.body.text.trim() : "";
+        const text = typeof req.body?.text === "string" ? req.body.text.trim() : "";
 
         if(text.length === 0 || text.length > MAX_TEXT_LENGTH) {
             return res.status(400).json({ message: "Invalid message text." });

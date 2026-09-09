@@ -4,7 +4,7 @@ import './index.css'
 import MainContent from './components/MainContext'
 import Navbar from './components/NavBar'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+import { API_URL } from './config/api.js'
 
 function getSavedTheme() {
   const savedTheme = localStorage.getItem('TutorBridge-theme')
@@ -15,6 +15,7 @@ function App() {
   const [activeView, setActiveView] = useState('home')
   const [user, setUser] = useState(null)
   const [authLoading, setAuthLoading] = useState(true)
+  const [logoutError, setLogoutError] = useState('')
   const [theme, setTheme] = useState(getSavedTheme)
 
   const [selectedConversationId, setSelectedConversationId] =
@@ -65,20 +66,28 @@ function App() {
   }
 
   async function handleLogout() {
+    setLogoutError('')
     try {
-      await fetch(`${API_URL}/api/auth/logout`, {
+      const response = await fetch(`${API_URL}/api/auth/logout`, {
         method: 'POST',
         credentials: 'include',
       })
-    } finally {
+      if (!response.ok && response.status !== 401) throw new Error('Logout failed')
       setUser(null)
       setSelectedConversationId(null)
       setActiveView('home')
+    } catch {
+      setLogoutError('Unable to sign out. Please try again.')
     }
   }
 
   return (
     <div className="flex h-dvh overflow-hidden bg-TutorBridge-mid">
+      {logoutError && (
+        <p role="alert" className="fixed right-4 top-4 z-50 rounded bg-TutorBridge-input p-3 text-TutorBridge-danger">
+          {logoutError}
+        </p>
+      )}
       <Navbar
         activeView={activeView}
         onNavClick={setActiveView}

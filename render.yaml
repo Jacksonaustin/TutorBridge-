@@ -1,0 +1,19 @@
+# One free web service serves the React build and API on the same origin.
+services:
+  - type: web
+    name: tutorbridge
+    runtime: docker
+    plan: free
+    region: ohio
+    dockerfilePath: ./Dockerfile.render
+    dockerContext: .
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "10000"
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: MONGODB_URI
+        sync: false
