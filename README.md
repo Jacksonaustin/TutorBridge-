@@ -1,5 +1,8 @@
 # TutorBridge 
 
+Complete architecture, API, database, authentication, Docker, deployment, and
+testing documentation is available in [DOCUMENTATION.md](DOCUMENTATION.md).
+
 ## Running and deploying
 
 Local containers: `docker compose up --build` (requires `backend/.env`).
