@@ -55,6 +55,14 @@ function App() {
     )
   }
 
+  function handleNavClick(view) {
+    if (view === 'messages') {
+      setSelectedConversationId(null)
+    }
+
+    setActiveView(view)
+  }
+
   function handleAuthenticated(authenticatedUser) {
     setUser(authenticatedUser)
     setActiveView('home')
@@ -67,12 +75,17 @@ function App() {
 
   async function handleLogout() {
     setLogoutError('')
+
     try {
       const response = await fetch(`${API_URL}/api/auth/logout`, {
         method: 'POST',
         credentials: 'include',
       })
-      if (!response.ok && response.status !== 401) throw new Error('Logout failed')
+
+      if (!response.ok && response.status !== 401) {
+        throw new Error('Logout failed')
+      }
+
       setUser(null)
       setSelectedConversationId(null)
       setActiveView('home')
@@ -82,15 +95,19 @@ function App() {
   }
 
   return (
-    <div className="flex h-dvh overflow-hidden bg-TutorBridge-mid">
+    <div className="flex h-dvh flex-col overflow-hidden bg-TutorBridge-mid md:flex-row">
       {logoutError && (
-        <p role="alert" className="fixed right-4 top-4 z-50 rounded bg-TutorBridge-input p-3 text-TutorBridge-danger">
+        <p
+          role="alert"
+          className="fixed right-4 top-4 z-50 rounded bg-TutorBridge-input p-3 text-TutorBridge-danger"
+        >
           {logoutError}
         </p>
       )}
+
       <Navbar
         activeView={activeView}
-        onNavClick={setActiveView}
+        onNavClick={handleNavClick}
         user={user}
         authLoading={authLoading}
         onLogout={handleLogout}
@@ -100,7 +117,7 @@ function App() {
 
       <MainContent
         view={activeView}
-        onNavClick={setActiveView}
+        onNavClick={handleNavClick}
         onAuthenticated={handleAuthenticated}
         user={user}
         selectedConversationId={selectedConversationId}

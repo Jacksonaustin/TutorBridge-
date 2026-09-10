@@ -23,13 +23,10 @@ function RequestHelp() {
     try {
       const response = await fetch(`${API_URL}/api/requests`, {
         method: 'POST',
-
         headers: {
           'Content-Type': 'application/json',
         },
-
         credentials: 'include',
-
         body: JSON.stringify({
           subject,
           topic,
@@ -47,12 +44,10 @@ function RequestHelp() {
         } else {
           setError(data.message || 'Unable to create request.')
         }
-
         return
       }
 
       setMessage('Tutoring request posted successfully!')
-
       setSubject('')
       setTopic('')
       setDescription('')
@@ -66,19 +61,19 @@ function RequestHelp() {
   }
 
   return (
-    <div className="flex min-h-full justify-center p-6">
+    <div className="flex min-h-full justify-center p-4 sm:p-6">
       <div className="w-full max-w-2xl">
-        <h1 className="mb-2 text-3xl font-bold text-TutorBridge-text">
+        <h1 className="mb-2 text-2xl font-bold text-TutorBridge-text sm:text-3xl">
           Request Tutoring
         </h1>
 
-        <p className="mb-6 text-TutorBridge-muted">
+        <p className="mb-5 text-sm text-TutorBridge-muted sm:mb-6 sm:text-base">
           Tell other students what you need help with.
         </p>
 
         <form
           onSubmit={handleSubmit}
-          className="rounded-lg bg-TutorBridge-dark p-6"
+          className="rounded-lg bg-TutorBridge-dark p-4 sm:p-6"
         >
           <div className="mb-4">
             <label
@@ -89,25 +84,25 @@ function RequestHelp() {
             </label>
 
             <select
-            id="subject"
-            value={subject}
-            onChange={(event) => setSubject(event.target.value)}
-            required
-            className="w-full rounded-md bg-TutorBridge-input px-3 py-2 text-TutorBridge-text focus:outline-none"
+              id="subject"
+              value={subject}
+              onChange={(event) => setSubject(event.target.value)}
+              required
+              className="w-full rounded-md bg-TutorBridge-input px-3 py-2.5 text-TutorBridge-text focus:outline-none"
             >
-            <option value="">Select a subject</option>
-            <option value="Computer Science">Computer Science</option>
-            <option value="Information Technology">Information Technology</option>
-            <option value="Cybersecurity">Cybersecurity</option>
-            <option value="Mathematics">Mathematics</option>
-            <option value="Engineering">Engineering</option>
-            <option value="Biology">Biology</option>
-            <option value="Psychology">Psychology</option>
-            <option value="Nursing">Nursing</option>
-            <option value="Business">Business</option>
-            <option value="Education">Education</option>
-            <option value="Criminal Justice">Criminal Justice</option>
-            <option value="Other">Other</option>
+              <option value="">Select a subject</option>
+              <option value="Computer Science">Computer Science</option>
+              <option value="Information Technology">Information Technology</option>
+              <option value="Cybersecurity">Cybersecurity</option>
+              <option value="Mathematics">Mathematics</option>
+              <option value="Engineering">Engineering</option>
+              <option value="Biology">Biology</option>
+              <option value="Psychology">Psychology</option>
+              <option value="Nursing">Nursing</option>
+              <option value="Business">Business</option>
+              <option value="Education">Education</option>
+              <option value="Criminal Justice">Criminal Justice</option>
+              <option value="Other">Other</option>
             </select>
           </div>
 
@@ -127,7 +122,7 @@ function RequestHelp() {
               required
               maxLength={150}
               placeholder="Example: Java recursion"
-              className="w-full rounded-md bg-TutorBridge-input px-3 py-2 text-TutorBridge-text placeholder:text-TutorBridge-muted focus:outline-none"
+              className="w-full rounded-md bg-TutorBridge-input px-3 py-2.5 text-TutorBridge-text placeholder:text-TutorBridge-muted focus:outline-none"
             />
           </div>
 
@@ -147,11 +142,11 @@ function RequestHelp() {
               maxLength={2000}
               rows={5}
               placeholder="Describe what you need help with..."
-              className="w-full resize-none rounded-md bg-TutorBridge-input px-3 py-2 text-TutorBridge-text placeholder:text-TutorBridge-muted focus:outline-none"
+              className="w-full resize-none rounded-md bg-TutorBridge-input px-3 py-2.5 text-TutorBridge-text placeholder:text-TutorBridge-muted focus:outline-none"
             />
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label
                 htmlFor="requestedDate"
@@ -166,7 +161,7 @@ function RequestHelp() {
                 value={requestedDate}
                 onChange={(event) => setRequestedDate(event.target.value)}
                 required
-                className="w-full rounded-md bg-TutorBridge-input px-3 py-2 text-TutorBridge-text focus:outline-none"
+                className="w-full rounded-md bg-TutorBridge-input px-3 py-2.5 text-TutorBridge-text focus:outline-none"
               />
             </div>
 
@@ -184,7 +179,7 @@ function RequestHelp() {
                 value={requestedTime}
                 onChange={(event) => setRequestedTime(event.target.value)}
                 required
-                className="w-full rounded-md bg-TutorBridge-input px-3 py-2 text-TutorBridge-text focus:outline-none"
+                className="w-full rounded-md bg-TutorBridge-input px-3 py-2.5 text-TutorBridge-text focus:outline-none"
               />
             </div>
           </div>
@@ -204,7 +199,7 @@ function RequestHelp() {
           <button
             type="submit"
             disabled={loading}
-            className="mt-6 rounded-md bg-TutorBridge-accent px-5 py-2.5 font-medium text-TutorBridge-text hover:bg-TutorBridge-accent-hover disabled:opacity-60"
+            className="mt-6 w-full rounded-md bg-TutorBridge-accent px-5 py-2.5 font-medium text-TutorBridge-on-accent hover:bg-TutorBridge-accent-hover disabled:opacity-60 sm:w-auto"
           >
             {loading ? 'Posting...' : 'Post Request'}
           </button>

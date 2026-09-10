@@ -79,8 +79,8 @@ export function LoginCard({ onAuthenticated }) {
   }
 
   return (
-    <div className="flex h-full items-center justify-center p-6">
-      <div className="w-full max-w-md rounded-lg bg-TutorBridge-dark p-8 shadow-md">
+    <div className="flex min-h-full items-center justify-center p-4 sm:p-6">
+      <div className="w-full max-w-md rounded-lg bg-TutorBridge-dark p-5 shadow-md sm:p-8">
         <h2 className="mb-6 text-2xl font-bold text-TutorBridge-text">
           {isSignup ? 'Create Account' : 'Login'}
         </h2>
@@ -89,7 +89,10 @@ export function LoginCard({ onAuthenticated }) {
           {isSignup && (
             <>
               <div className="mb-4">
-                <label htmlFor="name" className="mb-1 block text-sm font-medium text-TutorBridge-text">
+                <label
+                  htmlFor="name"
+                  className="mb-1 block text-sm font-medium text-TutorBridge-text"
+                >
                   Name
                 </label>
                 <input
@@ -99,13 +102,19 @@ export function LoginCard({ onAuthenticated }) {
                   value={name}
                   onChange={(event) => setName(event.target.value)}
                   required
-                  className="w-full rounded-md bg-TutorBridge-input px-3 py-2 text-TutorBridge-text focus:border-TutorBridge-accent focus:outline-none focus:ring"
+                  className="w-full rounded-md bg-TutorBridge-input px-3 py-2.5 text-TutorBridge-text focus:border-TutorBridge-accent focus:outline-none focus:ring"
                 />
               </div>
 
               <div className="mb-4">
-                <label htmlFor="major" className="mb-1 block text-sm font-medium text-TutorBridge-text">
-                  Major <span className="font-normal text-TutorBridge-muted">(optional)</span>
+                <label
+                  htmlFor="major"
+                  className="mb-1 block text-sm font-medium text-TutorBridge-text"
+                >
+                  Major{' '}
+                  <span className="font-normal text-TutorBridge-muted">
+                    (optional)
+                  </span>
                 </label>
                 <select
                   id="major"
@@ -117,7 +126,7 @@ export function LoginCard({ onAuthenticated }) {
                       setOtherMajor('')
                     }
                   }}
-                  className="w-full rounded-md bg-TutorBridge-input px-3 py-2 text-TutorBridge-text focus:border-TutorBridge-accent focus:outline-none focus:ring"
+                  className="w-full rounded-md bg-TutorBridge-input px-3 py-2.5 text-TutorBridge-text focus:border-TutorBridge-accent focus:outline-none focus:ring"
                 >
                   <option value="">Select a major</option>
                   {MAJORS.map((majorName) => (
@@ -130,7 +139,10 @@ export function LoginCard({ onAuthenticated }) {
 
               {major === 'Other' && (
                 <div className="mb-4">
-                  <label htmlFor="otherMajor" className="mb-1 block text-sm font-medium text-TutorBridge-text">
+                  <label
+                    htmlFor="otherMajor"
+                    className="mb-1 block text-sm font-medium text-TutorBridge-text"
+                  >
                     Enter your major
                   </label>
                   <input
@@ -140,7 +152,7 @@ export function LoginCard({ onAuthenticated }) {
                     value={otherMajor}
                     onChange={(event) => setOtherMajor(event.target.value)}
                     placeholder="Example: Graphic Design"
-                    className="w-full rounded-md bg-TutorBridge-input px-3 py-2 text-TutorBridge-text placeholder:text-TutorBridge-muted focus:border-TutorBridge-accent focus:outline-none focus:ring"
+                    className="w-full rounded-md bg-TutorBridge-input px-3 py-2.5 text-TutorBridge-text placeholder:text-TutorBridge-muted focus:border-TutorBridge-accent focus:outline-none focus:ring"
                   />
                 </div>
               )}
@@ -148,7 +160,10 @@ export function LoginCard({ onAuthenticated }) {
           )}
 
           <div className="mb-4">
-            <label htmlFor="email" className="mb-1 block text-sm font-medium text-TutorBridge-text">
+            <label
+              htmlFor="email"
+              className="mb-1 block text-sm font-medium text-TutorBridge-text"
+            >
               Email
             </label>
             <input
@@ -158,12 +173,15 @@ export function LoginCard({ onAuthenticated }) {
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               required
-              className="w-full rounded-md bg-TutorBridge-input px-3 py-2 text-TutorBridge-text focus:border-TutorBridge-accent focus:outline-none focus:ring"
+              className="w-full rounded-md bg-TutorBridge-input px-3 py-2.5 text-TutorBridge-text focus:border-TutorBridge-accent focus:outline-none focus:ring"
             />
           </div>
 
           <div className="mb-6">
-            <label htmlFor="password" className="mb-1 block text-sm font-medium text-TutorBridge-text">
+            <label
+              htmlFor="password"
+              className="mb-1 block text-sm font-medium text-TutorBridge-text"
+            >
               Password
             </label>
             <input
@@ -174,10 +192,12 @@ export function LoginCard({ onAuthenticated }) {
               onChange={(event) => setPassword(event.target.value)}
               minLength={isSignup ? 8 : undefined}
               required
-              className="w-full rounded-md bg-TutorBridge-input px-3 py-2 text-TutorBridge-text focus:border-TutorBridge-accent focus:outline-none focus:ring"
+              className="w-full rounded-md bg-TutorBridge-input px-3 py-2.5 text-TutorBridge-text focus:border-TutorBridge-accent focus:outline-none focus:ring"
             />
             {isSignup && (
-              <p className="mt-1 text-xs text-TutorBridge-muted">At least 8 characters.</p>
+              <p className="mt-1 text-xs text-TutorBridge-muted">
+                At least 8 characters.
+              </p>
             )}
           </div>
 
@@ -190,7 +210,7 @@ export function LoginCard({ onAuthenticated }) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-md bg-TutorBridge-accent px-4 py-2 text-TutorBridge-text transition-colors hover:bg-TutorBridge-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
+            className="w-full rounded-md bg-TutorBridge-accent px-4 py-2.5 text-TutorBridge-on-accent transition-colors hover:bg-TutorBridge-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
           >
             {loading ? 'Please wait...' : isSignup ? 'Create Account' : 'Login'}
           </button>

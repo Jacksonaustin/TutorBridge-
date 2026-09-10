@@ -92,7 +92,7 @@ function Browse({ user, onOpenConversation }) {
       if (!response.ok) {
         setError(
           data.message ||
-          'Unable to accept request.'
+            'Unable to accept request.'
         )
         return
       }
@@ -163,7 +163,7 @@ function Browse({ user, onOpenConversation }) {
       if (!response.ok) {
         setError(
           data.message ||
-          'Unable to open conversation.'
+            'Unable to open conversation.'
         )
         return
       }
@@ -189,13 +189,13 @@ function Browse({ user, onOpenConversation }) {
   })
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold text-TutorBridge-text">
+    <div className="p-4 sm:p-6">
+      <h1 className="text-2xl font-bold text-TutorBridge-text sm:text-3xl">
         Browse Requests
       </h1>
 
-      <div className="mt-4 flex gap-4">
-        <div>
+      <div className="mt-4 flex flex-col gap-4 sm:flex-row">
+        <div className="w-full sm:w-auto">
           <label
             htmlFor="subjectFilter"
             className="mb-2 block text-sm font-medium text-TutorBridge-text"
@@ -209,7 +209,7 @@ function Browse({ user, onOpenConversation }) {
             onChange={(event) =>
               setSelectedSubject(event.target.value)
             }
-            className="rounded-md bg-TutorBridge-input px-3 py-2 text-TutorBridge-text focus:outline-none"
+            className="w-full rounded-md bg-TutorBridge-input px-3 py-2.5 text-TutorBridge-text focus:outline-none sm:w-auto"
           >
             {subjects.map((subject) => (
               <option
@@ -222,7 +222,7 @@ function Browse({ user, onOpenConversation }) {
           </select>
         </div>
 
-        <div>
+        <div className="w-full sm:w-auto">
           <label
             htmlFor="statusFilter"
             className="mb-2 block text-sm font-medium text-TutorBridge-text"
@@ -236,7 +236,7 @@ function Browse({ user, onOpenConversation }) {
             onChange={(event) =>
               setSelectedStatus(event.target.value)
             }
-            className="rounded-md bg-TutorBridge-input px-3 py-2 text-TutorBridge-text focus:outline-none"
+            className="w-full rounded-md bg-TutorBridge-input px-3 py-2.5 text-TutorBridge-text focus:outline-none sm:w-auto"
           >
             {statuses.map((status) => (
               <option
@@ -250,7 +250,7 @@ function Browse({ user, onOpenConversation }) {
         </div>
       </div>
 
-      <p className="mt-3 text-TutorBridge-muted">
+      <p className="mt-3 text-sm text-TutorBridge-muted sm:text-base">
         {filteredRequests.length} requests found
       </p>
 
@@ -260,7 +260,7 @@ function Browse({ user, onOpenConversation }) {
         </p>
       )}
 
-      <div className="mt-6 space-y-4">
+      <div className="mt-5 space-y-4 sm:mt-6">
         {filteredRequests.map((request) => {
           const studentId = getId(request.studentId)
           const tutorId = getId(request.tutorId)
@@ -269,51 +269,44 @@ function Browse({ user, onOpenConversation }) {
           const isOwnRequest =
             studentId &&
             currentUserId &&
-            String(studentId) ===
-              String(currentUserId)
+            String(studentId) === String(currentUserId)
 
           const isTutor =
             tutorId &&
             currentUserId &&
-            String(tutorId) ===
-              String(currentUserId)
+            String(tutorId) === String(currentUserId)
 
-          const isAccepted =
-            request.status === 'accepted'
-
-          const isOpeningMessage =
-            messagingId === request._id
-
-          const isAccepting =
-            acceptingId === request._id
+          const isAccepted = request.status === 'accepted'
+          const isOpeningMessage = messagingId === request._id
+          const isAccepting = acceptingId === request._id
 
           return (
             <div
               key={request._id}
-              className="rounded-lg border border-TutorBridge-input bg-TutorBridge-dark p-5"
+              className="rounded-lg border border-TutorBridge-input bg-TutorBridge-dark p-4 sm:p-5"
             >
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h2 className="text-lg font-semibold text-TutorBridge-text">
+              <div className="flex items-start justify-between gap-3 sm:gap-4">
+                <div className="min-w-0">
+                  <h2 className="break-words text-lg font-semibold text-TutorBridge-text">
                     {request.subject}
                   </h2>
 
-                  <p className="mt-1 font-medium text-TutorBridge-text">
+                  <p className="mt-1 break-words font-medium text-TutorBridge-text">
                     {request.topic}
                   </p>
                 </div>
 
-                <span className="rounded-md bg-TutorBridge-input px-3 py-1 text-sm text-TutorBridge-muted">
+                <span className="shrink-0 rounded-md bg-TutorBridge-input px-2.5 py-1 text-xs text-TutorBridge-muted sm:px-3 sm:text-sm">
                   {request.status}
                 </span>
               </div>
 
-              <p className="mt-4 text-TutorBridge-muted">
+              <p className="mt-4 break-words text-sm leading-6 text-TutorBridge-muted sm:text-base">
                 {request.description}
               </p>
 
               <div className="mt-4 text-sm text-TutorBridge-muted">
-                <p>
+                <p className="break-words">
                   Requested by:{' '}
                   {request.studentId?.name ||
                     'Unknown student'}
@@ -344,7 +337,7 @@ function Browse({ user, onOpenConversation }) {
                   isOpeningMessage ||
                   isAccepting
                 }
-                className="mt-5 rounded-md bg-TutorBridge-accent px-4 py-2 font-medium text-TutorBridge-text hover:bg-TutorBridge-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
+                className="mt-5 w-full rounded-md bg-TutorBridge-accent px-4 py-2.5 font-medium text-TutorBridge-on-accent hover:bg-TutorBridge-accent-hover disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
               >
                 {isOwnRequest
                   ? 'Your Request'

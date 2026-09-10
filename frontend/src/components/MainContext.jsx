@@ -14,7 +14,7 @@ function MainContent({
 }) {
   return (
     <main
-      className="h-dvh min-w-0 flex-1 overflow-y-auto bg-TutorBridge-mid text-TutorBridge-text"
+      className="min-h-0 min-w-0 flex-1 overflow-y-auto bg-TutorBridge-mid pb-20 text-TutorBridge-text md:h-dvh md:pb-0"
       data-view={view}
       aria-label={`${view} content`}
     >

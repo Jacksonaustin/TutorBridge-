@@ -55,8 +55,25 @@ body {
   overscroll-behavior: none;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  overflow: hidden;
+}
+
 #root {
   min-height: 100dvh;
+}
+
+/* Safe-area padding helps on phones with notches and home indicators. */
+.mobile-safe-top {
+  padding-top: max(0.75rem, env(safe-area-inset-top));
+}
+
+.mobile-safe-bottom {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
 }
 
 /* Keep white text readable on purple accent buttons in light mode. */

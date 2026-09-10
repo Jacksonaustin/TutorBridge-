@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { API_URL } from '../config/api.js'
+import { BackIcon } from './Icons'
 
 function Messages({ user, initialConversationId }) {
   const [conversations, setConversations] = useState([])
@@ -47,7 +48,6 @@ function Messages({ user, initialConversationId }) {
           fetch(`${API_URL}/api/conversations`, {
             credentials: 'include',
           }),
-
           fetch(`${API_URL}/api/requests/mine`, {
             credentials: 'include',
           }),
@@ -178,10 +178,8 @@ function Messages({ user, initialConversationId }) {
 
         setMessages(messageList)
 
-        // Update the preview on the left with the newest message.
         if (messageList.length > 0) {
-          const newestMessage =
-            messageList[messageList.length - 1]
+          const newestMessage = messageList[messageList.length - 1]
 
           setConversations((currentConversations) =>
             currentConversations.map((conversation) =>
@@ -189,15 +187,13 @@ function Messages({ user, initialConversationId }) {
                 ? {
                     ...conversation,
                     lastMessage: newestMessage.text,
-                    lastMessageTimestamp:
-                      newestMessage.createdAt,
+                    lastMessageTimestamp: newestMessage.createdAt,
                   }
                 : conversation
             )
           )
         }
 
-        // Mark messages in the open conversation as read.
         await fetch(
           `${API_URL}/api/conversations/${selectedConversationId}/read`,
           {
@@ -217,13 +213,10 @@ function Messages({ user, initialConversationId }) {
       }
     }
 
-    // Load immediately.
     loadMessages()
 
-    // Then check for new messages every 3 seconds.
     const interval = setInterval(loadMessages, 3000)
 
-    // Stop polling when leaving/changing conversations.
     return () => {
       clearInterval(interval)
     }
@@ -341,8 +334,7 @@ function Messages({ user, initialConversationId }) {
             ? {
                 ...conversation,
                 lastMessage: data.message.text,
-                lastMessageTimestamp:
-                  data.message.createdAt,
+                lastMessageTimestamp: data.message.createdAt,
               }
             : conversation
         )
@@ -368,6 +360,65 @@ function Messages({ user, initialConversationId }) {
     return new Date(dateString).toLocaleString()
   }
 
+  function renderContacts() {
+    if (loading) {
+      return (
+        <p className="p-5 text-TutorBridge-muted">
+          Loading...
+        </p>
+      )
+    }
+
+    if (contacts.length === 0) {
+      return (
+        <p className="p-5 text-TutorBridge-muted">
+          No accepted tutoring requests yet.
+        </p>
+      )
+    }
+
+    return contacts.map((contact) => {
+      const conversation = conversations.find(
+        (item) =>
+          String(getId(item.otherParticipant)) ===
+          String(contact.id)
+      )
+
+      const selected =
+        conversation &&
+        conversation._id === selectedConversationId
+
+      return (
+        <button
+          key={contact.id}
+          type="button"
+          onClick={() => handleOpenContact(contact)}
+          disabled={openingContactId === contact.id}
+          className={`w-full border-b border-TutorBridge-input p-4 text-left transition-colors ${
+            selected
+              ? 'bg-TutorBridge-input'
+              : 'hover:bg-TutorBridge-input'
+          }`}
+        >
+          <p className="truncate font-semibold text-TutorBridge-text">
+            {contact.name}
+          </p>
+
+          <p className="mt-1 truncate text-xs text-TutorBridge-muted">
+            {contact.major}
+          </p>
+
+          <p className="mt-2 truncate text-sm text-TutorBridge-muted">
+            {openingContactId === contact.id
+              ? 'Opening...'
+              : conversation?.lastMessage ||
+                'No messages yet'}
+          </p>
+        </button>
+      )
+    })
+  }
+
   const selectedConversation = conversations.find(
     (conversation) =>
       conversation._id === selectedConversationId
@@ -386,8 +437,8 @@ function Messages({ user, initialConversationId }) {
 
   if (!user) {
     return (
-      <div className="p-6">
-        <h1 className="text-3xl font-bold text-TutorBridge-text">
+      <div className="p-4 sm:p-6">
+        <h1 className="text-2xl font-bold text-TutorBridge-text sm:text-3xl">
           Messages
         </h1>
 
@@ -400,8 +451,8 @@ function Messages({ user, initialConversationId }) {
 
   return (
     <div className="flex h-full min-h-0">
-      {/* Tutoring partners */}
-      <div className="flex w-80 shrink-0 flex-col border-r border-TutorBridge-input bg-TutorBridge-dark">
+      {/* Desktop tutoring partner list */}
+      <div className="hidden w-80 shrink-0 flex-col border-r border-TutorBridge-input bg-TutorBridge-dark md:flex">
         <div className="border-b border-TutorBridge-input p-5">
           <h1 className="text-2xl font-bold text-TutorBridge-text">
             Messages
@@ -413,67 +464,43 @@ function Messages({ user, initialConversationId }) {
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          {loading ? (
-            <p className="p-5 text-TutorBridge-muted">
-              Loading...
-            </p>
-          ) : contacts.length === 0 ? (
-            <p className="p-5 text-TutorBridge-muted">
-              No accepted tutoring requests yet.
-            </p>
-          ) : (
-            contacts.map((contact) => {
-              const conversation = conversations.find(
-                (item) =>
-                  String(getId(item.otherParticipant)) ===
-                  String(contact.id)
-              )
-
-              const selected =
-                conversation &&
-                conversation._id === selectedConversationId
-
-              return (
-                <button
-                  key={contact.id}
-                  type="button"
-                  onClick={() =>
-                    handleOpenContact(contact)
-                  }
-                  disabled={
-                    openingContactId === contact.id
-                  }
-                  className={`w-full border-b border-TutorBridge-input p-4 text-left transition-colors ${
-                    selected
-                      ? 'bg-TutorBridge-input'
-                      : 'hover:bg-TutorBridge-input'
-                  }`}
-                >
-                  <p className="font-semibold text-TutorBridge-text">
-                    {contact.name}
-                  </p>
-
-                  <p className="mt-1 text-xs text-TutorBridge-muted">
-                    {contact.major}
-                  </p>
-
-                  <p className="mt-2 truncate text-sm text-TutorBridge-muted">
-                    {openingContactId === contact.id
-                      ? 'Opening...'
-                      : conversation?.lastMessage ||
-                        'No messages yet'}
-                  </p>
-                </button>
-              )
-            })
-          )}
+          {renderContacts()}
         </div>
       </div>
 
+      {/* Mobile tutoring partner list */}
+      {!selectedConversation && (
+        <div className="flex w-full min-w-0 flex-col bg-TutorBridge-dark md:hidden">
+          <div className="border-b border-TutorBridge-input px-4 py-4">
+            <h1 className="text-2xl font-bold text-TutorBridge-text">
+              Messages
+            </h1>
+
+            <p className="mt-1 text-sm text-TutorBridge-muted">
+              Your tutoring partners
+            </p>
+          </div>
+
+          {error && (
+            <div className="border-b border-TutorBridge-input px-4 py-3 text-sm text-TutorBridge-danger">
+              {error}
+            </div>
+          )}
+
+          <div className="flex-1 overflow-y-auto">
+            {renderContacts()}
+          </div>
+        </div>
+      )}
+
       {/* Conversation */}
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div
+        className={`${
+          selectedConversation ? 'flex' : 'hidden md:flex'
+        } min-w-0 flex-1 flex-col`}
+      >
         {error && (
-          <div className="border-b border-TutorBridge-input px-5 py-3 text-sm text-TutorBridge-danger">
+          <div className="border-b border-TutorBridge-input px-4 py-3 text-sm text-TutorBridge-danger sm:px-5">
             {error}
           </div>
         )}
@@ -493,42 +520,53 @@ function Messages({ user, initialConversationId }) {
         ) : (
           <>
             {/* Conversation header */}
-            <div className="border-b border-TutorBridge-input bg-TutorBridge-dark p-5">
-              <h2 className="text-xl font-semibold text-TutorBridge-text">
-                {selectedConversation.otherParticipant?.name ||
-                  selectedContact?.name ||
-                  'Unknown student'}
-              </h2>
+            <div className="flex items-center gap-3 border-b border-TutorBridge-input bg-TutorBridge-dark px-3 py-3 sm:p-5">
+              <button
+                type="button"
+                onClick={() => setSelectedConversationId(null)}
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-TutorBridge-input text-TutorBridge-muted transition-colors hover:text-TutorBridge-text md:hidden"
+                aria-label="Back to tutoring partners"
+                title="Back to tutoring partners"
+              >
+                <BackIcon />
+              </button>
 
-              <p className="text-sm text-TutorBridge-muted">
-                {selectedConversation.otherParticipant?.major ||
-                  selectedContact?.major ||
-                  'No major listed'}
-              </p>
+              <div className="min-w-0">
+                <h2 className="truncate text-lg font-semibold text-TutorBridge-text sm:text-xl">
+                  {selectedConversation.otherParticipant?.name ||
+                    selectedContact?.name ||
+                    'Unknown student'}
+                </h2>
+
+                <p className="truncate text-xs text-TutorBridge-muted sm:text-sm">
+                  {selectedConversation.otherParticipant?.major ||
+                    selectedContact?.major ||
+                    'No major listed'}
+                </p>
+              </div>
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-6">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6">
               {loadingMessages ? (
                 <p className="text-TutorBridge-muted">
                   Loading messages...
                 </p>
               ) : messages.length === 0 ? (
                 <div className="flex h-full items-center justify-center">
-                  <p className="text-TutorBridge-muted">
+                  <p className="text-center text-TutorBridge-muted">
                     No messages yet. Say hello!
                   </p>
                 </div>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   {messages.map((message) => {
                     const senderId = getSenderId(message)
 
                     const isMine =
                       currentUserId &&
                       senderId &&
-                      String(senderId) ===
-                        String(currentUserId)
+                      String(senderId) === String(currentUserId)
 
                     return (
                       <div
@@ -540,20 +578,20 @@ function Messages({ user, initialConversationId }) {
                         }`}
                       >
                         <div
-                          className={`max-w-[70%] rounded-lg px-4 py-3 ${
+                          className={`max-w-[85%] rounded-lg px-3 py-2.5 sm:max-w-[70%] sm:px-4 sm:py-3 ${
                             isMine
-                              ? 'bg-TutorBridge-accent text-TutorBridge-text'
+                              ? 'bg-TutorBridge-accent text-TutorBridge-on-accent'
                               : 'bg-TutorBridge-dark text-TutorBridge-text'
                           }`}
                         >
-                          <p className="whitespace-pre-wrap break-words">
+                          <p className="whitespace-pre-wrap break-words text-sm sm:text-base">
                             {message.text}
                           </p>
 
                           <p
-                            className={`mt-1 text-xs ${
+                            className={`mt-1 text-[11px] sm:text-xs ${
                               isMine
-                                ? 'text-TutorBridge-text/70'
+                                ? 'text-white/70'
                                 : 'text-TutorBridge-muted'
                             }`}
                           >
@@ -570,9 +608,9 @@ function Messages({ user, initialConversationId }) {
             {/* Send message */}
             <form
               onSubmit={handleSend}
-              className="border-t border-TutorBridge-input bg-TutorBridge-dark p-4"
+              className="border-t border-TutorBridge-input bg-TutorBridge-dark p-3 sm:p-4"
             >
-              <div className="flex gap-3">
+              <div className="flex gap-2 sm:gap-3">
                 <input
                   type="text"
                   value={messageText}
@@ -585,13 +623,13 @@ function Messages({ user, initialConversationId }) {
                     selectedContact?.name ||
                     'student'
                   }`}
-                  className="min-w-0 flex-1 rounded-md bg-TutorBridge-input px-4 py-3 text-TutorBridge-text outline-none placeholder:text-TutorBridge-muted focus:ring-2 focus:ring-TutorBridge-accent"
+                  className="min-w-0 flex-1 rounded-md bg-TutorBridge-input px-3 py-2.5 text-sm text-TutorBridge-text outline-none placeholder:text-TutorBridge-muted focus:ring-2 focus:ring-TutorBridge-accent sm:px-4 sm:py-3 sm:text-base"
                 />
 
                 <button
                   type="submit"
                   disabled={!messageText.trim() || sending}
-                  className="rounded-md bg-TutorBridge-accent px-5 py-3 font-medium text-TutorBridge-text transition-colors hover:bg-TutorBridge-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
+                  className="shrink-0 rounded-md bg-TutorBridge-accent px-4 py-2.5 text-sm font-medium text-TutorBridge-on-accent transition-colors hover:bg-TutorBridge-accent-hover disabled:cursor-not-allowed disabled:opacity-50 sm:px-5 sm:py-3 sm:text-base"
                 >
                   {sending ? 'Sending...' : 'Send'}
                 </button>
