@@ -1,7 +1,7 @@
 # TutorBridge 
 
 Complete architecture, API, database, authentication, Docker, deployment, and
-testing documentation is available in [DOCUMENTATION.md](DOCUMENTATION.md).
+testing documentation is available in [DOCUMENTATION.md](DOCUMENTATION.md), link to the deployed website - https://tutorbridge-ev60.onrender.com/
 
 ## Running and deploying
 
