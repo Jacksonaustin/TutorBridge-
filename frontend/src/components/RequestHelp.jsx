@@ -13,11 +13,33 @@ function RequestHelp() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
+  function getTodayDate() {
+    const today = new Date()
+    const year = today.getFullYear()
+    const month = String(today.getMonth() + 1).padStart(2, '0')
+    const day = String(today.getDate()).padStart(2, '0')
+
+    return `${year}-${month}-${day}`
+  }
+
   async function handleSubmit(event) {
     event.preventDefault()
 
     setMessage('')
     setError('')
+
+    const requestedDateTime = new Date(
+      `${requestedDate}T${requestedTime}`
+    )
+
+    if (
+      Number.isNaN(requestedDateTime.getTime()) ||
+      requestedDateTime <= new Date()
+    ) {
+      setError('Please choose a future date and time.')
+      return
+    }
+
     setLoading(true)
 
     try {
@@ -33,6 +55,9 @@ function RequestHelp() {
           description,
           requestedDate,
           requestedTime,
+          // Send the exact selected time as UTC so the backend and Render
+          // do not interpret the user's local time differently.
+          requestedDateTime: requestedDateTime.toISOString(),
         }),
       })
 
@@ -159,6 +184,7 @@ function RequestHelp() {
                 id="requestedDate"
                 type="date"
                 value={requestedDate}
+                min={getTodayDate()}
                 onChange={(event) => setRequestedDate(event.target.value)}
                 required
                 className="w-full rounded-md bg-TutorBridge-input px-3 py-2.5 text-TutorBridge-text focus:outline-none"

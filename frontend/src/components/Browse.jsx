@@ -24,6 +24,14 @@ const statuses = [
   'Accepted',
 ]
 
+function isExpiredPendingRequest(request) {
+  if (request.status !== 'pending' || !request.expiresAt) {
+    return false
+  }
+
+  return new Date(request.expiresAt) <= new Date()
+}
+
 function Browse({ user, onOpenConversation }) {
   const [requests, setRequests] = useState([])
   const [error, setError] = useState('')
@@ -60,6 +68,22 @@ function Browse({ user, onOpenConversation }) {
           'Could not load requests — are you signed in?'
         )
       })
+  }, [])
+
+  // Remove an expired pending card from the open page without needing a refresh.
+  // MongoDB also deletes the document from the database using expiresAt.
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRequests((currentRequests) =>
+        currentRequests.filter(
+          (request) => !isExpiredPendingRequest(request)
+        )
+      )
+    }, 10000)
+
+    return () => {
+      clearInterval(interval)
+    }
   }, [])
 
   function getId(value) {

@@ -56,11 +56,25 @@ const tutoringRequestSchema = new mongoose.Schema(
       trim: true,
       maxlength: 20,
     },
+    // Pending requests expire at their requested date/time.
+    // This field is removed as soon as a request is accepted or cancelled,
+    // so those requests are not deleted by MongoDB's TTL cleanup.
+    expiresAt: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,
     collection: "requests",
   }
+);
+
+// MongoDB automatically removes documents after expiresAt passes.
+// Accepted/cancelled requests have expiresAt removed, so they remain.
+tutoringRequestSchema.index(
+  { expiresAt: 1 },
+  { expireAfterSeconds: 0 }
 );
 
 const TutoringRequest = mongoose.model(
